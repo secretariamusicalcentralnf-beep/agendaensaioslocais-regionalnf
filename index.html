@@ -1,0 +1,530 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Agenda de Ensaios Locais</title><style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: cabeçalho com resumo do dia, abas fixas no topo, lista de ensaios em linhas com o horário em destaque à esquerda; filtros em grade acima da lista. */
+:root{
+  --bg:#EDF0F3; --surface:#FFFFFF; --fg:#16212C; --muted:#566473; --line:#D3DAE1;
+  --accent:#1B5E7E; --accent-ink:#FFFFFF; --accent-soft:#DCEAF1;
+  --today:#8F4F00; --today-soft:#FBEBD0; --danger:#B3261E;
+  --font-display:'Archivo','Helvetica Neue',Arial,sans-serif;
+  --font-body:'Public Sans',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10161C; --surface:#18212A; --fg:#E7ECF1; --muted:#9AA8B6; --line:#2C3946;
+    --accent:#7CB9D6; --accent-ink:#0B1A23; --accent-soft:#1E3442;
+    --today:#F0A642; --today-soft:#3A2A10; --danger:#F2867F; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10161C; --surface:#18212A; --fg:#E7ECF1; --muted:#9AA8B6; --line:#2C3946;
+  --accent:#7CB9D6; --accent-ink:#0B1A23; --accent-soft:#1E3442;
+  --today:#F0A642; --today-soft:#3A2A10; --danger:#F2867F; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--bg); color:var(--fg); font:15px/1.5 var(--font-body);
+  padding-block:0 56px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+#app{max-width:960px;margin:0 auto}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance}
+
+.topo{padding:28px 0 14px}
+.eyebrow{margin:0 0 6px;font:700 12px var(--font-display);letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.topo h1{font-size:clamp(28px,6.4vw,46px);font-weight:800;line-height:1.04;letter-spacing:-.02em}
+.resumo{margin:10px 0 0;color:var(--muted)}
+.hojebox{margin-top:16px}
+.hoje-cab{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:baseline}
+.sel-hoje{font:700 11px var(--font-display);letter-spacing:.12em;text-transform:uppercase;background:var(--today-soft);color:var(--today);padding:3px 8px;border-radius:4px}
+.hoje-lista{list-style:none;margin:10px 0 0;padding:0;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.hoje-lista li{display:flex;gap:14px;align-items:baseline;padding:11px 14px;border-top:1px solid var(--line)}
+.hoje-lista li:first-child{border-top:0}
+.hoje-lista .h{flex:0 0 auto;min-width:58px;font:800 21px/1.1 var(--font-display);color:var(--today);font-variant-numeric:tabular-nums}
+.hoje-lista .n{min-width:0}
+.hoje-lista .n strong{display:block;font-weight:700;font-size:16px;line-height:1.3}
+.hoje-lista .m{display:block;color:var(--muted);font-size:13px}
+.hoje-vazio{margin:8px 0 0;color:var(--muted)}
+.aviso{margin-top:14px;padding:10px 12px;background:var(--accent-soft);border-radius:6px;white-space:pre-line}
+
+.abas{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:2px;border-bottom:1px solid var(--line);overflow-x:auto}
+.abas button{flex:0 0 auto;background:none;border:0;border-bottom:3px solid transparent;padding:13px 14px 10px;font:600 15px var(--font-body);color:var(--muted)}
+.abas button[aria-selected="true"]{color:var(--accent);border-bottom-color:var(--accent)}
+
+.filtros{display:grid;gap:12px;padding:18px 0 6px}
+.campos{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.campo{display:flex;flex-direction:column;gap:4px;min-width:0}
+.campo label,.rot{font:600 11px var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.campo input,.campo select,.campo textarea{width:100%;min-height:40px;padding:8px 10px;background:var(--surface);border:1px solid var(--line);border-radius:6px}
+.campo textarea{min-height:76px;resize:vertical}
+.dias{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.dias button{display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 0;background:var(--surface);border:1px solid var(--line);border-radius:6px;font:600 13px var(--font-body)}
+.dias button small{font:500 11px var(--font-body);color:var(--muted);font-variant-numeric:tabular-nums}
+.dias button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.dias button[aria-pressed="true"] small{color:var(--accent-ink)}
+.barra{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding:10px 0 2px;color:var(--muted)}
+.barra b{color:var(--fg);font-variant-numeric:tabular-nums}
+.btn{font:600 14px var(--font-body);padding:9px 14px;border-radius:6px;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink)}
+.btn.sec{background:transparent;color:var(--accent)}
+.btn.perigo{background:transparent;border-color:var(--danger);color:var(--danger)}
+.btn.mini{padding:6px 10px;font-size:13px}
+.btn[disabled]{opacity:.5;cursor:default}
+.link{background:none;border:0;padding:0;color:var(--accent);font-weight:600;text-decoration:underline}
+
+.grupo{margin:0;padding:22px 0 6px;font:700 13px var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.grupo.hoje{color:var(--today)}
+.ens{display:grid;grid-template-columns:72px minmax(0,1fr) auto;gap:4px 14px;padding:14px 0;border-top:1px solid var(--line)}
+.hora{font:800 24px/1.1 var(--font-display);color:var(--accent);font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+.corpo{min-width:0}
+.corpo h3{font-size:18px;font-weight:700;line-height:1.25}
+.corpo h3 .sub{font-weight:500;color:var(--muted)}
+.onde{margin:2px 0 8px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 8px;align-items:center}
+.pill{font:600 11px var(--font-body);padding:2px 7px;border-radius:999px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.pill.cen{border-color:var(--accent);color:var(--accent)}
+.enc{margin:0;display:flex;flex-wrap:wrap;gap:4px 22px}
+.enc div{min-width:0}
+.enc dt{font:600 11px var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.enc dd{margin:0;font-weight:500;overflow-wrap:anywhere}
+.enc dd.vazio{color:var(--muted);font-weight:400}
+.prox{text-align:right;font-variant-numeric:tabular-nums}
+.prox b{display:block;font-weight:600}
+.prox span{color:var(--muted);font-size:13px}
+.prox.agora b{color:var(--today)}
+.vazio-geral{padding:32px 0;color:var(--muted)}
+
+.cal-topo{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:18px 0 10px}
+.cal-topo h2{font-size:22px;font-weight:800;text-transform:capitalize}
+.cal-nav{display:flex;gap:6px}
+.cal-nav button{min-width:40px;min-height:40px;background:var(--surface);border:1px solid var(--line);border-radius:6px;font-weight:600}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.cal .cab{text-align:center;font:600 11px var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-bottom:2px}
+.cal button{min-height:54px;padding:6px;display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start;background:var(--surface);border:1px solid var(--line);border-radius:6px;font-weight:600;font-variant-numeric:tabular-nums}
+.cal button small{font:700 11px var(--font-body);color:var(--accent);background:var(--accent-soft);border-radius:999px;padding:0 6px}
+.cal button.zero{color:var(--muted);font-weight:400}
+.cal button.hj{border-color:var(--today);box-shadow:inset 0 0 0 1px var(--today)}
+.cal button.sel{background:var(--accent-soft);border-color:var(--accent)}
+.cal .fora{visibility:hidden}
+
+.tab-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+table.tb{width:100%;min-width:760px;border-collapse:collapse;font-size:14px}
+.tb th,.tb td{padding:10px 12px;text-align:left;vertical-align:top;border-top:1px solid var(--line)}
+.tb thead th{border-top:0;font:600 11px var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--accent-soft);white-space:nowrap}
+.tb tbody th{font-weight:400}
+.tb tbody th strong{display:block;font-weight:700;font-size:15px}
+.tb td.num{font:700 16px var(--font-display);color:var(--accent);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tb .m{display:block;color:var(--muted);font-size:13px;font-weight:400}
+.tb tbody th:first-child{position:sticky;left:0;background:var(--surface)}
+
+.adm h2{font-size:24px;font-weight:800;padding-top:18px}
+.nota{margin:4px 0 14px;color:var(--muted)}
+.painel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px;margin:12px 0;display:grid;gap:12px}
+.painel h3{font-size:17px}
+.grade-f{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.check{display:flex;align-items:center;gap:8px;min-height:40px}
+.check input{width:18px;height:18px;min-height:0}
+.acoes{display:flex;gap:8px;flex-wrap:wrap}
+.arow{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 10px;padding:10px 0;border-top:1px solid var(--line);align-items:center}
+.arow strong{display:block}
+.arow span.m{color:var(--muted);font-size:14px}
+.pub{position:sticky;bottom:0;margin-top:16px;padding:12px;background:var(--surface);border:1px solid var(--line);border-radius:8px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.pub .st{font-weight:600}
+.pub .st.sujo{color:var(--today)}
+.erro{color:var(--danger);font-weight:600}
+footer.rod{margin-top:36px;padding-top:12px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+
+@media (max-width:560px){
+  .ens{grid-template-columns:62px minmax(0,1fr)}
+  .prox{grid-column:2;text-align:left;display:flex;gap:8px;align-items:baseline}
+  .prox b{display:inline}
+  .hora{font-size:21px}
+}
+</style>
+
+<div id="app"></div>
+
+<script id="dados" type="application/json">{"meta":{"aviso":"","atualizado":""},"ensaios":[
+{"id":1,"nome":"Rui Sanglard","sub":"","mun":"Nova Friburgo","central":false,"sem":1,"dia":1,"rec":"t","hora":"19:30","local":"Carlos Alberto dos Santos Faustino","regional":"André da Paixão"},
+{"id":2,"nome":"Vieira","sub":"","mun":"Teresópolis","central":false,"sem":1,"dia":1,"rec":"t","hora":"19:30","local":"","regional":"Samuel Sardou Fernandes"},
+{"id":3,"nome":"Central Regional","sub":"Cordoeira","mun":"Nova Friburgo","central":true,"sem":1,"dia":2,"rec":"t","hora":"19:30","local":"Manoel Vieira de Paula","regional":"Naor Adbeel Rocha"},
+{"id":4,"nome":"Sítio Capivari","sub":"","mun":"Bom Jardim","central":false,"sem":1,"dia":2,"rec":"t","hora":"19:30","local":"Daniel Moura","regional":"Edson Rodrigues da Silva"},
+{"id":5,"nome":"Liberdade","sub":"","mun":"Paraíba do Sul","central":false,"sem":1,"dia":4,"rec":"i","hora":"19:30","local":"Jorge Inácio da Silva","regional":"Izaías Inácio da Silva"},
+{"id":6,"nome":"Riograndina","sub":"","mun":"Nova Friburgo","central":false,"sem":1,"dia":5,"rec":"t","hora":"19:30","local":"Vinícius Viana da Veiga","regional":"André da Paixão"},
+{"id":7,"nome":"Nova Suíça","sub":"","mun":"Nova Friburgo","central":false,"sem":1,"dia":6,"rec":"t","hora":"19:30","local":"","regional":"André da Paixão"},
+{"id":8,"nome":"Papucaia","sub":"","mun":"Cachoeiras de Macacu","central":false,"sem":1,"dia":6,"rec":"t","hora":"17:00","local":"Felipe Francisco Garcia da Silva","regional":"Edson Rodrigues da Silva"},
+{"id":9,"nome":"Central Setorial Sumidouro","sub":"Campinas","mun":"Sumidouro","central":true,"sem":1,"dia":6,"rec":"t","hora":"19:30","local":"Edilon Marques Evaristo","regional":"Samuel Sardou Fernandes"},
+{"id":10,"nome":"Central Três Rios","sub":"Alto Purys","mun":"Três Rios","central":true,"sem":1,"dia":6,"rec":"i","hora":"17:00","local":"Ezequiel Ferreira de Siqueira","regional":"Izaías Inácio da Silva"},
+{"id":11,"nome":"Central Teresópolis","sub":"São Pedro","mun":"Teresópolis","central":true,"sem":1,"dia":0,"rec":"t","hora":"16:00","local":"","regional":"Samuel Sardou Fernandes"},
+{"id":12,"nome":"Campo do Prado","sub":"","mun":"Cachoeiras de Macacu","central":false,"sem":2,"dia":1,"rec":"t","hora":"19:30","local":"Amílton Francisco","regional":"Edson Rodrigues da Silva"},
+{"id":13,"nome":"Janela das Andorinhas","sub":"","mun":"Nova Friburgo","central":false,"sem":2,"dia":1,"rec":"t","hora":"19:30","local":"Geraldo Firmino","regional":"Edson Rodrigues da Silva"},
+{"id":14,"nome":"Campo do Coelho","sub":"","mun":"Nova Friburgo","central":false,"sem":2,"dia":2,"rec":"t","hora":"19:30","local":"Emerson da Rocha Rosa","regional":"Naor Adbeel Rocha"},
+{"id":15,"nome":"Central Paraíba do Sul","sub":"Palhas","mun":"Paraíba do Sul","central":true,"sem":2,"dia":2,"rec":"p","hora":"19:30","local":"Jorge Inácio da Silva","regional":"Izaías Inácio da Silva"},
+{"id":16,"nome":"Central Setorial Bom Jardim","sub":"Bem-Te-Vi Amarelo","mun":"Bom Jardim","central":true,"sem":2,"dia":3,"rec":"t","hora":"19:30","local":"Marcos Corrêa","regional":"Edson Rodrigues da Silva"},
+{"id":17,"nome":"Fernandes Pinheiro","sub":"","mun":"Três Rios","central":false,"sem":2,"dia":6,"rec":"i","hora":"16:30","local":"","regional":"Izaías Inácio da Silva"},
+{"id":18,"nome":"Chácara do Paraíso","sub":"","mun":"Nova Friburgo","central":false,"sem":2,"dia":6,"rec":"t","hora":"19:30","local":"Marco Antonio Pereira","regional":"Samuel Sardou Fernandes"},
+{"id":19,"nome":"Duas Barras","sub":"Centro","mun":"Duas Barras","central":false,"sem":2,"dia":6,"rec":"t","hora":"19:30","local":"Henrique Oliveira de Paula Matias","regional":"Samuel Lopes Alves"},
+{"id":20,"nome":"Vila Isabel","sub":"","mun":"Três Rios","central":false,"sem":2,"dia":6,"rec":"p","hora":"16:30","local":"Nelson Koizume","regional":"Izaías Inácio da Silva"},
+{"id":21,"nome":"Lambari","sub":"","mun":"Sumidouro","central":false,"sem":2,"dia":6,"rec":"t","hora":"19:30","local":"","regional":"Samuel Sardou Fernandes"},
+{"id":22,"nome":"Lumiar","sub":"","mun":"Nova Friburgo","central":false,"sem":2,"dia":0,"rec":"t","hora":"16:00","local":"Jhonny Santos Klein","regional":"André da Paixão"},
+{"id":23,"nome":"Central Carmo","sub":"São Manoel","mun":"Carmo","central":true,"sem":2,"dia":0,"rec":"t","hora":"10:00","local":"","regional":"Samuel Lopes Alves"},
+{"id":24,"nome":"Prado","sub":"","mun":"Nova Friburgo","central":false,"sem":3,"dia":1,"rec":"t","hora":"19:30","local":"Luiz Carlos Angote Dias","regional":"André da Paixão"},
+{"id":25,"nome":"Olaria","sub":"","mun":"Nova Friburgo","central":false,"sem":3,"dia":2,"rec":"t","hora":"19:30","local":"Murillo Antunes Araujo Moura","regional":"Naor Adbeel Rocha"},
+{"id":26,"nome":"Japuíba","sub":"","mun":"Cachoeiras de Macacu","central":false,"sem":3,"dia":2,"rec":"t","hora":"19:30","local":"Heraldo Machado Mendes","regional":"Edson Rodrigues da Silva"},
+{"id":27,"nome":"São Geraldo","sub":"","mun":"Nova Friburgo","central":false,"sem":3,"dia":4,"rec":"t","hora":"19:30","local":"Josenei Rodrigues Fernandes","regional":"Naor Adbeel Rocha"},
+{"id":28,"nome":"Central Cordeiro","sub":"Lavrinhas","mun":"Cordeiro","central":true,"sem":3,"dia":5,"rec":"t","hora":"19:30","local":"","regional":"Samuel Lopes Alves"},
+{"id":29,"nome":"Central Duas Barras","sub":"Holofote","mun":"Duas Barras","central":true,"sem":3,"dia":6,"rec":"t","hora":"19:30","local":"Elinaldo S. dos Santos","regional":"Samuel Lopes Alves"},
+{"id":30,"nome":"Central Sapucaia","sub":"Distrito Anta","mun":"Sapucaia","central":true,"sem":3,"dia":6,"rec":"t","hora":"16:30","local":"Tiago Gonçalves Vargas","regional":"Samuel Lopes Alves"},
+{"id":31,"nome":"Limoeiro","sub":"","mun":"Paraíba do Sul","central":false,"sem":3,"dia":0,"rec":"p","hora":"15:30","local":"Gleidston Gomes Gonçalves","regional":"Izaías Inácio da Silva"},
+{"id":32,"nome":"Parque Dom João VI","sub":"","mun":"Nova Friburgo","central":false,"sem":4,"dia":1,"rec":"t","hora":"19:30","local":"","regional":"Naor Adbeel Rocha"},
+{"id":33,"nome":"Loteamento Floresta","sub":"","mun":"Nova Friburgo","central":false,"sem":4,"dia":5,"rec":"t","hora":"19:30","local":"Mario Sergio Gomes Soares","regional":"André da Paixão"},
+{"id":34,"nome":"Amparo","sub":"","mun":"Nova Friburgo","central":false,"sem":4,"dia":6,"rec":"t","hora":"19:30","local":"Almair Marinho","regional":"André da Paixão"},
+{"id":35,"nome":"Banquete","sub":"2º Distrito","mun":"Bom Jardim","central":false,"sem":4,"dia":6,"rec":"t","hora":"19:30","local":"","regional":"Edson Rodrigues da Silva"},
+{"id":36,"nome":"Bela Vista","sub":"","mun":"Paraíba do Sul","central":false,"sem":4,"dia":6,"rec":"i","hora":"16:30","local":"","regional":"Izaías Inácio da Silva"},
+{"id":37,"nome":"Stucky","sub":"","mun":"Nova Friburgo","central":false,"sem":4,"dia":0,"rec":"t","hora":"16:00","local":"Dalvan Quintanilha Toledo","regional":"Naor Adbeel Rocha"},
+{"id":38,"nome":"Cidade Nova","sub":"","mun":"Três Rios","central":false,"sem":4,"dia":0,"rec":"p","hora":"15:30","local":"Neemias Fontes da Silva Gomes","regional":"Izaías Inácio da Silva"},
+{"id":39,"nome":"Conquista","sub":"","mun":"Nova Friburgo","central":false,"sem":5,"dia":5,"rec":"t","hora":"19:30","local":"Alceir Rome Rocha","regional":"Naor Adbeel Rocha"}
+]}</script>
+
+<script>
+//#logic-start
+var DIAS=['domingo','segunda','terça','quarta','quinta','sexta','sábado'];
+var CURTO=['dom','seg','ter','qua','qui','sex','sáb'];
+var ORDEM_DIA=[1,2,3,4,5,6,0];
+function fem(d){return d>=1&&d<=5}
+function ordTxt(e){var f=fem(e.dia);if(e.sem===5)return f?'Última':'Último';return e.sem+(f?'ª':'º');}
+function quando(e){return ordTxt(e)+' '+DIAS[e.dia]+(fem(e.dia)?'-feira':'');}
+function ocorre(e,d){
+  if(d.getDay()!==e.dia)return false;
+  var m=d.getMonth()+1;
+  if(e.rec==='i'&&m%2===0)return false;
+  if(e.rec==='p'&&m%2===1)return false;
+  var dm=d.getDate(),dim=new Date(d.getFullYear(),m,0).getDate();
+  if(e.sem===5)return dm+7>dim;
+  return Math.ceil(dm/7)===e.sem;
+}
+function proxima(e,de){
+  for(var i=0;i<400;i++){
+    var d=new Date(de.getFullYear(),de.getMonth(),de.getDate()+i);
+    if(ocorre(e,d))return {d:d,i:i};
+  }
+  return null;
+}
+function periodo(h){var n=parseInt(String(h).slice(0,2),10);return n<12?'manha':(n<18?'tarde':'noite');}
+function semAcento(s){return String(s==null?'':s).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();}
+function cmpMes(a,b){
+  if(a.sem!==b.sem)return a.sem-b.sem;
+  var da=ORDEM_DIA.indexOf(a.dia),db=ORDEM_DIA.indexOf(b.dia);
+  if(da!==db)return da-db;
+  return a.hora<b.hora?-1:(a.hora>b.hora?1:a.nome.localeCompare(b.nome,'pt-BR'));
+}
+//#logic-end
+
+(function(){
+var dados=JSON.parse(document.getElementById('dados').textContent);
+var app=document.getElementById('app');
+var hoje=new Date();hoje=new Date(hoje.getFullYear(),hoje.getMonth(),hoje.getDate());
+var F={q:'',mun:'',sem:'',per:'',mes:'',dias:[],ord:'prox'};
+var cal={y:hoje.getFullYear(),m:hoje.getMonth(),sel:hoje};
+var aba='agenda',isOwner=false,dirty=0,editId=null,confirmDel=null,erroPub='',publicando=false;
+
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function $(s){return app.querySelector(s)}
+function pad(n){return n<10?'0'+n:''+n}
+function fmtData(d){return CURTO[d.getDay()]+', '+pad(d.getDate())+'/'+pad(d.getMonth()+1)}
+function dataLonga(d){return new Intl.DateTimeFormat('pt-BR',{weekday:'long',day:'2-digit',month:'long'}).format(d)}
+function rel(i){return i===0?'hoje':(i===1?'amanhã':'em '+i+' dias')}
+function uniq(k){var s={};dados.ensaios.forEach(function(e){if(e[k])s[e[k]]=1});return Object.keys(s).sort(function(a,b){return a.localeCompare(b,'pt-BR')})}
+function opts(arr,sel,todos){return '<option value="">'+todos+'</option>'+arr.map(function(v){return '<option value="'+esc(v)+'"'+(v===sel?' selected':'')+'>'+esc(v)+'</option>'}).join('')}
+function nextId(){return dados.ensaios.reduce(function(m,e){return Math.max(m,e.id)},0)+1}
+
+function cardHtml(e,o){
+  o=o||{};
+  var p=o.prox?proxima(e,hoje):null;
+  var pills='';
+  if(e.central)pills+='<span class="pill cen">Central</span>';
+  if(e.rec==='i')pills+='<span class="pill">Meses ímpares</span>';
+  if(e.rec==='p')pills+='<span class="pill">Meses pares</span>';
+  var loc=e.local?'<dd>'+esc(e.local)+'</dd>':'<dd class="vazio">não informado</dd>';
+  var px='';
+  if(p)px='<div class="prox'+(p.i===0?' agora':'')+'"><b>'+fmtData(p.d)+'</b><span>'+rel(p.i)+'</span></div>';
+  return '<article class="ens"><div class="hora">'+esc(e.hora)+'</div><div class="corpo"><h3>'+esc(e.nome)+(e.sub?'<span class="sub"> · '+esc(e.sub)+'</span>':'')+'</h3>'+
+    '<p class="onde"><span>'+esc(e.mun)+' · '+quando(e)+'</span>'+pills+'</p>'+
+    '<dl class="enc"><div><dt>Encarregado local</dt>'+loc+'</div><div><dt>Encarregado regional</dt><dd>'+esc(e.regional||'—')+'</dd></div></dl></div>'+px+'</article>';
+}
+
+function filtrar(){
+  var q=semAcento(F.q).trim();
+  return dados.ensaios.filter(function(e){
+    if(F.mun&&e.mun!==F.mun)return false;
+    if(F.sem&&String(e.sem)!==F.sem)return false;
+    if(F.per&&periodo(e.hora)!==F.per)return false;
+    if(F.dias.length&&F.dias.indexOf(e.dia)<0)return false;
+    if(F.mes){var m=+F.mes;if(e.rec==='i'&&m%2===0)return false;if(e.rec==='p'&&m%2===1)return false;}
+    if(q){var h=semAcento([e.nome,e.sub,e.mun,quando(e)].join(' '));return q.split(/\s+/).every(function(t){return h.indexOf(t)>=0});}
+    return true;
+  });
+}
+
+function shell(){
+  app.innerHTML=
+  '<header class="topo"><p class="eyebrow">Regional Nova Friburgo / RJ</p><h1>Agenda de Ensaios Locais</h1><p class="resumo" id="resumo"></p><div class="hojebox" id="hojebox"></div><div id="aviso"></div></header>'+
+  '<nav class="abas" id="abas" role="tablist" aria-label="Seções"></nav>'+
+  '<main>'+
+  '<section id="p-agenda" role="tabpanel"><div class="filtros">'+
+    '<div class="campo"><label for="f-q">Buscar</label><input id="f-q" type="search" placeholder="Congregação, bairro ou município" autocomplete="off"></div>'+
+    '<div><div class="rot" style="margin-bottom:4px">Dia da semana</div><div class="dias" id="f-dias"></div></div>'+
+    '<div class="campos">'+
+      '<div class="campo"><label for="f-mun">Município</label><select id="f-mun"></select></div>'+
+      '<div class="campo"><label for="f-sem">Semana do mês</label><select id="f-sem"><option value="">Todas</option><option value="1">1ª semana</option><option value="2">2ª semana</option><option value="3">3ª semana</option><option value="4">4ª semana</option><option value="5">Última semana</option></select></div>'+
+      '<div class="campo"><label for="f-per">Horário</label><select id="f-per"><option value="">Qualquer</option><option value="manha">Manhã (antes das 12h)</option><option value="tarde">Tarde (12h às 18h)</option><option value="noite">Noite (18h em diante)</option></select></div>'+
+      '<div class="campo"><label for="f-mes">Mês</label><select id="f-mes"><option value="">Qualquer</option>'+['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'].map(function(n,i){return '<option value="'+(i+1)+'">'+n+'</option>'}).join('')+'</select></div>'+
+      '<div class="campo"><label for="f-ord">Ordenar por</label><select id="f-ord"><option value="prox">Próxima data</option><option value="mes">Ordem do mês</option><option value="nome">Nome</option><option value="hora">Horário</option></select></div>'+
+    '</div></div>'+
+    '<div class="barra"><span id="contagem"></span><button class="link" data-act="limpar" type="button">Limpar filtros</button></div>'+
+    '<div id="lista"></div></section>'+
+  '<section id="p-calendario" role="tabpanel" hidden></section>'+
+  '<section id="p-tabela" role="tabpanel" hidden></section>'+
+  '<section id="p-admin" class="adm" role="tabpanel" hidden></section>'+
+  '</main><footer class="rod" id="rodape"></footer>';
+}
+
+function renderTopo(){
+  var n=dados.ensaios.length,muns=uniq('mun').length;
+  $('#resumo').textContent=n+' ensaios locais em '+muns+' municípios.';
+  var hj=dados.ensaios.filter(function(e){return ocorre(e,hoje)}).sort(function(a,b){return a.hora<b.hora?-1:1});
+  var h='<div class="hoje-cab"><span class="sel-hoje">Hoje</span><span>'+esc(dataLonga(hoje))+'</span></div>';
+  if(hj.length){h+='<ul class="hoje-lista">'+hj.map(function(e){return '<li><span class="h">'+esc(e.hora)+'</span><span class="n"><strong>'+esc(e.nome)+'</strong><span class="m">'+esc([e.sub,e.mun].filter(Boolean).join(' · '))+'</span></span></li>'}).join('')+'</ul>';}
+  else h+='<p class="hoje-vazio">Sem ensaios programados.</p>';
+  $('#hojebox').innerHTML=h;
+  var av=(dados.meta.aviso||'').trim();
+  $('#aviso').innerHTML=av?'<div class="aviso">'+esc(av)+'</div>':'';
+  var at=dados.meta.atualizado;
+  var atTxt='';
+  if(at&&/^\d{4}-\d{2}-\d{2}$/.test(at)){atTxt=' Atualizada em '+at.slice(8)+'/'+at.slice(5,7)+'/'+at.slice(0,4)+'.';}
+  $('#rodape').textContent='Fonte: Agenda de Ensaios Locais, Regional Nova Friburgo/RJ. '+n+' ensaios locais programados.'+atTxt;
+}
+
+function renderAbas(){
+  var tabs=[['agenda','Agenda'],['tabela','Tabela'],['calendario','Calendário']];
+  if(isOwner)tabs.push(['admin','Administração']);
+  $('#abas').innerHTML=tabs.map(function(t){return '<button role="tab" type="button" data-act="aba" data-v="'+t[0]+'" aria-selected="'+(aba===t[0])+'">'+t[1]+'</button>'}).join('');
+  ['agenda','calendario','tabela','admin'].forEach(function(k){var s=$('#p-'+k);if(s)s.hidden=(k!==aba)});
+}
+
+function renderFiltros(){
+  var dc=[0,0,0,0,0,0,0];dados.ensaios.forEach(function(e){dc[e.dia]++});
+  $('#f-dias').innerHTML=ORDEM_DIA.map(function(d){return '<button type="button" data-act="dia" data-v="'+d+'" aria-pressed="'+(F.dias.indexOf(d)>=0)+'">'+CURTO[d]+'<small>'+dc[d]+'</small></button>'}).join('');
+  $('#f-mun').innerHTML=opts(uniq('mun'),F.mun,'Todos');
+}
+
+function renderLista(){
+  var itens=filtrar();
+  $('#contagem').innerHTML='<b>'+itens.length+'</b> de '+dados.ensaios.length+' ensaios';
+  var box=$('#lista');
+  if(!itens.length){box.innerHTML='<p class="vazio-geral">Nenhum ensaio encontrado com esses filtros. Remova algum filtro ou limpe todos.</p>';return;}
+  var h='';
+  if(F.ord==='prox'){
+    var arr=itens.map(function(e){return {e:e,p:proxima(e,hoje)}}).filter(function(x){return x.p});
+    arr.sort(function(a,b){return a.p.i-b.p.i||(a.e.hora<b.e.hora?-1:(a.e.hora>b.e.hora?1:a.e.nome.localeCompare(b.e.nome,'pt-BR')))});
+    var ult=-1;
+    arr.forEach(function(x){
+      if(x.p.i!==ult){ult=x.p.i;h+='<h2 class="grupo'+(x.p.i===0?' hoje':'')+'">'+(x.p.i===0?'Hoje':(x.p.i===1?'Amanhã':esc(dataLonga(x.p.d))))+(x.p.i<2?'<span>'+esc(dataLonga(x.p.d))+'</span>':'')+'</h2>';}
+      h+=cardHtml(x.e,{});
+    });
+  }else{
+    var l=itens.slice();
+    if(F.ord==='mes')l.sort(cmpMes);
+    else if(F.ord==='nome')l.sort(function(a,b){return a.nome.localeCompare(b.nome,'pt-BR')});
+    else l.sort(function(a,b){return a.hora<b.hora?-1:(a.hora>b.hora?1:cmpMes(a,b))});
+    h='<div style="padding-top:8px"></div>'+l.map(function(e){return cardHtml(e,{prox:true})}).join('');
+  }
+  box.innerHTML=h;
+}
+
+function renderCal(){
+  var y=cal.y,m=cal.m,first=new Date(y,m,1),dim=new Date(y,m+1,0).getDate(),lead=first.getDay();
+  var h='<div class="cal-topo"><h2>'+esc(new Intl.DateTimeFormat('pt-BR',{month:'long',year:'numeric'}).format(first))+'</h2><div class="cal-nav"><button type="button" data-act="cal-hoje">Hoje</button><button type="button" data-act="cal-prev" aria-label="Mês anterior">‹</button><button type="button" data-act="cal-next" aria-label="Próximo mês">›</button></div></div><div class="cal">';
+  h+=CURTO.map(function(c){return '<div class="cab">'+c.slice(0,3)+'</div>'}).join('');
+  for(var i=0;i<lead;i++)h+='<button class="fora" tabindex="-1" aria-hidden="true"></button>';
+  for(var d=1;d<=dim;d++){
+    var dt=new Date(y,m,d),n=dados.ensaios.filter(function(e){return ocorre(e,dt)}).length;
+    var cls=(n?'':'zero')+(dt.getTime()===hoje.getTime()?' hj':'')+(dt.getTime()===cal.sel.getTime()?' sel':'');
+    h+='<button type="button" class="'+cls+'" data-act="cal-sel" data-d="'+y+'-'+m+'-'+d+'" aria-label="'+d+' de '+esc(new Intl.DateTimeFormat('pt-BR',{month:'long'}).format(dt))+': '+n+' ensaios">'+d+(n?'<small>'+n+'</small>':'<span></span>')+'</button>';
+  }
+  h+='</div>';
+  var lista=dados.ensaios.filter(function(e){return ocorre(e,cal.sel)}).sort(function(a,b){return a.hora<b.hora?-1:(a.hora>b.hora?1:a.nome.localeCompare(b.nome,'pt-BR'))});
+  h+='<h2 class="grupo'+(cal.sel.getTime()===hoje.getTime()?' hoje':'')+'">'+esc(dataLonga(cal.sel))+'<span>'+lista.length+' '+(lista.length===1?'ensaio':'ensaios')+'</span></h2>';
+  h+=lista.length?lista.map(function(e){return cardHtml(e,{})}).join(''):'<p class="vazio-geral">Nenhum ensaio nesta data.</p>';
+  $('#p-calendario').innerHTML=h;
+}
+
+function renderTabela(){
+  var rotulos={1:'1ª semana do mês',2:'2ª semana do mês',3:'3ª semana do mês',4:'4ª semana do mês',5:'Última semana do mês'};
+  var h='<p class="nota" style="padding-top:18px">Ensaios locais em ordem cronológica mensal, como na agenda impressa.</p>';
+  [1,2,3,4,5].forEach(function(sm){
+    var l=dados.ensaios.filter(function(e){return e.sem===sm}).sort(cmpMes);
+    if(!l.length)return;
+    h+='<h2 class="grupo">'+rotulos[sm]+'<span>'+l.length+' '+(l.length===1?'ensaio':'ensaios')+'</span></h2>';
+    h+='<div class="tab-wrap" tabindex="0"><table class="tb"><thead><tr><th scope="col">Congregação</th><th scope="col">Dia do ensaio</th><th scope="col">Horário</th><th scope="col">Encarregado local</th><th scope="col">Encarregado regional</th></tr></thead><tbody>';
+    l.forEach(function(e){
+      var det=[e.sub,e.mun].filter(Boolean).join(' · ');
+      h+='<tr><th scope="row"><strong>'+esc(e.nome)+'</strong><span class="m">'+esc(det)+'</span></th>'+
+        '<td>'+quando(e)+(e.rec==='i'?'<span class="m">meses ímpares</span>':(e.rec==='p'?'<span class="m">meses pares</span>':''))+'</td>'+
+        '<td class="num">'+esc(e.hora)+'</td>'+
+        '<td>'+(e.local?esc(e.local):'<span class="m">não informado</span>')+'</td>'+
+        '<td>'+esc(e.regional||'—')+'</td></tr>';
+    });
+    h+='</tbody></table></div>';
+  });
+  $('#p-tabela').innerHTML=h;
+}
+
+function barraPub(){
+  var b=$('#adm-bar');if(!b)return;
+  b.innerHTML='<span class="st'+(dirty?' sujo':'')+'">'+(dirty?dirty+' '+(dirty===1?'alteração':'alterações')+' ainda não publicada'+(dirty===1?'':'s'):'Nenhuma alteração pendente')+'</span>'+
+    '<span class="acoes"><button class="btn sec" type="button" data-act="adm-discard"'+(dirty&&!publicando?'':' disabled')+'>Descartar</button><button class="btn" type="button" data-act="adm-publish"'+(dirty&&!publicando?'':' disabled')+'>'+(publicando?'Publicando…':'Publicar alterações')+'</button></span>';
+  var er=$('#adm-erro');if(er)er.textContent=erroPub;
+}
+
+function renderAdmin(){
+  if(!isOwner){$('#p-admin').innerHTML='';return;}
+  var e=null;
+  if(editId!==null&&editId!=='novo')e=dados.ensaios.filter(function(x){return x.id===editId})[0];
+  var v=e||{nome:'',sub:'',mun:'',central:false,sem:1,dia:1,rec:'t',hora:'19:30',local:'',regional:''};
+  var h='<h2>Administração</h2><p class="nota">Só você vê esta aba. As mudanças ficam visíveis para todos depois de publicar.</p>';
+  h+='<div class="painel"><div class="campo"><label for="m-aviso">Aviso no topo do site (opcional)</label><textarea id="m-aviso" placeholder="Ex.: mudança de horário, ensaio cancelado">'+esc(dados.meta.aviso)+'</textarea></div></div>';
+  if(editId!==null){
+    h+='<div class="painel"><h3>'+(e?'Editar ensaio':'Novo ensaio')+'</h3><div class="grade-f">'+
+    '<div class="campo"><label for="f-nome">Congregação</label><input id="f-nome" value="'+esc(v.nome)+'"></div>'+
+    '<div class="campo"><label for="f-sub">Bairro ou localidade</label><input id="f-sub" value="'+esc(v.sub)+'"></div>'+
+    '<div class="campo"><label for="f-munA">Município</label><input id="f-munA" list="dl-mun" value="'+esc(v.mun)+'"></div>'+
+    '<div class="campo"><label for="f-semA">Semana do mês</label><select id="f-semA">'+[[1,'1ª'],[2,'2ª'],[3,'3ª'],[4,'4ª'],[5,'Última']].map(function(o){return '<option value="'+o[0]+'"'+(v.sem===o[0]?' selected':'')+'>'+o[1]+'</option>'}).join('')+'</select></div>'+
+    '<div class="campo"><label for="f-diaA">Dia da semana</label><select id="f-diaA">'+ORDEM_DIA.map(function(d){return '<option value="'+d+'"'+(v.dia===d?' selected':'')+'>'+DIAS[d]+'</option>'}).join('')+'</select></div>'+
+    '<div class="campo"><label for="f-recA">Meses</label><select id="f-recA"><option value="t"'+(v.rec==='t'?' selected':'')+'>Todos os meses</option><option value="i"'+(v.rec==='i'?' selected':'')+'>Só meses ímpares</option><option value="p"'+(v.rec==='p'?' selected':'')+'>Só meses pares</option></select></div>'+
+    '<div class="campo"><label for="f-horaA">Horário</label><input id="f-horaA" type="time" value="'+esc(v.hora)+'"></div>'+
+    '<div class="campo"><label for="f-local">Encarregado local</label><input id="f-local" value="'+esc(v.local)+'"></div>'+
+    '<div class="campo"><label for="f-regA">Encarregado regional</label><input id="f-regA" list="dl-reg" value="'+esc(v.regional)+'"></div>'+
+    '</div><label class="check"><input type="checkbox" id="f-cen"'+(v.central?' checked':'')+'> Ensaio de congregação central</label>'+
+    '<datalist id="dl-mun">'+uniq('mun').map(function(x){return '<option value="'+esc(x)+'">'}).join('')+'</datalist><datalist id="dl-reg">'+uniq('regional').map(function(x){return '<option value="'+esc(x)+'">'}).join('')+'</datalist>'+
+    '<p class="erro" id="f-erro" role="alert"></p><div class="acoes"><button class="btn" type="button" data-act="adm-save">Salvar ensaio</button><button class="btn sec" type="button" data-act="adm-cancel">Cancelar</button></div></div>';
+  }else{
+    h+='<div class="acoes"><button class="btn" type="button" data-act="adm-new">Novo ensaio</button></div>';
+  }
+  h+='<div style="margin-top:14px">'+dados.ensaios.slice().sort(cmpMes).map(function(x){
+    var conf=confirmDel===x.id;
+    return '<div class="arow"><div><strong>'+esc(x.nome)+(x.sub?' · '+esc(x.sub):'')+'</strong><span class="m">'+esc(x.mun)+' · '+quando(x)+' · '+esc(x.hora)+'</span></div><div class="acoes">'+
+      (conf?'<button class="btn perigo mini" type="button" data-act="adm-del-ok" data-id="'+x.id+'">Confirmar exclusão</button><button class="btn sec mini" type="button" data-act="adm-del-no">Cancelar</button>':
+      '<button class="btn sec mini" type="button" data-act="adm-edit" data-id="'+x.id+'">Editar</button><button class="btn perigo mini" type="button" data-act="adm-del" data-id="'+x.id+'">Excluir</button>')+'</div></div>';
+  }).join('')+'</div>';
+  h+='<p class="erro" id="adm-erro" role="alert"></p><div class="pub" id="adm-bar"></div>';
+  $('#p-admin').innerHTML=h;
+  barraPub();
+}
+
+function renderTudo(){renderTopo();renderAbas();renderFiltros();renderLista();renderCal();renderTabela();renderAdmin();}
+
+function setAba(a,pular){
+  if(a==='admin'&&!isOwner)a='agenda';
+  if(['agenda','calendario','tabela','admin'].indexOf(a)<0)a='agenda';
+  aba=a;renderAbas();
+  if(!pular){try{history.replaceState(null,'','#'+a)}catch(x){try{location.hash=a}catch(y){}}}
+}
+
+function montarHtml(){
+  var resetEl=document.head.querySelector('style');
+  var corpo=document.body.cloneNode(true);
+  var a=corpo.querySelector('#app');if(a)a.innerHTML='';
+  var d=corpo.querySelector('#dados');if(d)d.textContent=JSON.stringify(dados).replace(/</g,'\\u003c');
+  Array.prototype.slice.call(corpo.children).forEach(function(n){
+    var t=n.tagName;
+    var ok=(t==='TITLE'||t==='META'||t==='LINK'||t==='STYLE'||t==='SCRIPT'&&!n.src||n.id==='app');
+    if(!ok)corpo.removeChild(n);
+  });
+  var pre='<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>';
+  if(resetEl)return pre+resetEl.textContent+'</style></head><body>'+corpo.innerHTML+'</body></html>';
+  return '<!doctype html>'+document.documentElement.outerHTML;
+}
+
+async function publicar(){
+  publicando=true;erroPub='';barraPub();
+  dados.meta.atualizado=hoje.getFullYear()+'-'+pad(hoje.getMonth()+1)+'-'+pad(hoje.getDate());
+  try{
+    var art=await window.claude.use('artifact');
+    if(!art)throw {code:'unavailable'};
+    await art.publish(montarHtml());
+  }catch(err){
+    publicando=false;
+    var c=err&&err.code;
+    erroPub=c==='conflict'?'Outra versão foi publicada antes desta. A página vai recarregar; refaça a alteração.':
+      (c==='not_writer'||c==='not_granted')?'Esta conta não tem permissão para publicar alterações.':
+      'Não foi possível publicar agora. Tente de novo em instantes.';
+    barraPub();
+  }
+}
+
+app.addEventListener('input',function(ev){
+  var t=ev.target;
+  if(t.id==='f-q'){F.q=t.value;renderLista();}
+});
+app.addEventListener('change',function(ev){
+  var t=ev.target,m={'f-mun':'mun','f-sem':'sem','f-per':'per','f-mes':'mes','f-ord':'ord'};
+  if(m[t.id]){F[m[t.id]]=t.value;renderLista();}
+  if(t.id==='m-aviso'){var nv=t.value;if(nv!==dados.meta.aviso){dados.meta.aviso=nv;dirty++;renderTopo();barraPub();}}
+});
+app.addEventListener('click',function(ev){
+  var b=ev.target.closest('[data-act]');if(!b)return;
+  var act=b.getAttribute('data-act'),v=b.getAttribute('data-v'),id=+b.getAttribute('data-id');
+  if(act==='aba')setAba(v);
+  else if(act==='dia'){var d=+v,i=F.dias.indexOf(d);if(i<0)F.dias.push(d);else F.dias.splice(i,1);renderFiltros();renderLista();}
+  else if(act==='limpar'){F={q:'',mun:'',sem:'',per:'',mes:'',dias:[],ord:F.ord};
+    ['f-q','f-sem','f-per','f-mes'].forEach(function(k){$('#'+k).value=''});renderFiltros();renderLista();}
+  else if(act==='cal-prev'){cal.m--;if(cal.m<0){cal.m=11;cal.y--;}renderCal();}
+  else if(act==='cal-next'){cal.m++;if(cal.m>11){cal.m=0;cal.y++;}renderCal();}
+  else if(act==='cal-hoje'){cal={y:hoje.getFullYear(),m:hoje.getMonth(),sel:hoje};renderCal();}
+  else if(act==='cal-sel'){var p=b.getAttribute('data-d').split('-');cal.sel=new Date(+p[0],+p[1],+p[2]);renderCal();}
+  else if(act==='adm-new'){editId='novo';renderAdmin();}
+  else if(act==='adm-edit'){editId=id;renderAdmin();var f=$('#f-nome');if(f)f.focus();}
+  else if(act==='adm-cancel'){editId=null;renderAdmin();}
+  else if(act==='adm-del'){confirmDel=id;renderAdmin();}
+  else if(act==='adm-del-no'){confirmDel=null;renderAdmin();}
+  else if(act==='adm-del-ok'){dados.ensaios=dados.ensaios.filter(function(x){return x.id!==id});confirmDel=null;dirty++;renderTudo();}
+  else if(act==='adm-save'){
+    var nome=$('#f-nome').value.trim(),mun=$('#f-munA').value.trim(),hora=$('#f-horaA').value;
+    var er=$('#f-erro');
+    if(!nome||!mun||!/^\d{2}:\d{2}$/.test(hora)){er.textContent='Preencha congregação, município e horário.';return;}
+    var e=editId==='novo'?{id:nextId()}:dados.ensaios.filter(function(x){return x.id===editId})[0];
+    e.nome=nome;e.sub=$('#f-sub').value.trim();e.mun=mun;e.central=$('#f-cen').checked;
+    e.sem=+$('#f-semA').value;e.dia=+$('#f-diaA').value;e.rec=$('#f-recA').value;e.hora=hora;
+    e.local=$('#f-local').value.trim();e.regional=$('#f-regA').value.trim();
+    if(editId==='novo')dados.ensaios.push(e);
+    editId=null;dirty++;renderTudo();
+  }
+  else if(act==='adm-discard'){location.reload();}
+  else if(act==='adm-publish'){publicar();}
+});
+window.addEventListener('hashchange',function(){setAba(location.hash.slice(1),true)});
+
+shell();
+var h0=location.hash.slice(1);
+if(['agenda','calendario','tabela'].indexOf(h0)>=0)aba=h0;
+renderTudo();
+
+(async function(){
+  try{
+    if(!window.claude||!window.claude.use)return;
+    var u=await window.claude.use('user');
+    if(u&&u.isOwner&&u.isOwner()){
+      isOwner=true;
+      var h=location.hash.slice(1);if(h==='admin')aba='admin';
+      renderAbas();renderAdmin();
+    }
+  }catch(x){}
+})();
+})();
+</script>
+</body></html>
