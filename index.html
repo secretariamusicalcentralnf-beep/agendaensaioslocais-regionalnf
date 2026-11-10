@@ -112,7 +112,7 @@ h1,h2,h3{font-family:var(--font-display);margin:0;text-wrap:balance}
 .cal .fora{visibility:hidden}
 
 .tab-wrap{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
-table.tb{width:100%;min-width:760px;border-collapse:collapse;font-size:14px}
+table.tb{width:100%;min-width:0;border-collapse:collapse;font-size:14px}
 .tb th,.tb td{padding:10px 12px;text-align:left;vertical-align:top;border-top:1px solid var(--line)}
 .tb thead th{border-top:0;font:600 11px var(--font-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);background:var(--accent-soft);white-space:nowrap}
 .tb tbody th{font-weight:400}
@@ -148,47 +148,7 @@ footer.rod{margin-top:36px;padding-top:12px;border-top:1px solid var(--line);col
 
 <div id="app"></div>
 
-<script id="dados" type="application/json">{"meta":{"aviso":"","atualizado":""},"ensaios":[
-{"id":1,"nome":"Rui Sanglard","sub":"","mun":"Nova Friburgo","central":false,"sem":1,"dia":1,"rec":"t","hora":"19:30","local":"Carlos Alberto dos Santos Faustino","regional":"André da Paixão"},
-{"id":2,"nome":"Vieira","sub":"","mun":"Teresópolis","central":false,"sem":1,"dia":1,"rec":"t","hora":"19:30","local":"","regional":"Samuel Sardou Fernandes"},
-{"id":3,"nome":"Central Regional","sub":"Cordoeira","mun":"Nova Friburgo","central":true,"sem":1,"dia":2,"rec":"t","hora":"19:30","local":"Manoel Vieira de Paula","regional":"Naor Adbeel Rocha"},
-{"id":4,"nome":"Sítio Capivari","sub":"","mun":"Bom Jardim","central":false,"sem":1,"dia":2,"rec":"t","hora":"19:30","local":"Daniel Moura","regional":"Edson Rodrigues da Silva"},
-{"id":5,"nome":"Liberdade","sub":"","mun":"Paraíba do Sul","central":false,"sem":1,"dia":4,"rec":"i","hora":"19:30","local":"Jorge Inácio da Silva","regional":"Izaías Inácio da Silva"},
-{"id":6,"nome":"Riograndina","sub":"","mun":"Nova Friburgo","central":false,"sem":1,"dia":5,"rec":"t","hora":"19:30","local":"Vinícius Viana da Veiga","regional":"André da Paixão"},
-{"id":7,"nome":"Nova Suíça","sub":"","mun":"Nova Friburgo","central":false,"sem":1,"dia":6,"rec":"t","hora":"19:30","local":"","regional":"André da Paixão"},
-{"id":8,"nome":"Papucaia","sub":"","mun":"Cachoeiras de Macacu","central":false,"sem":1,"dia":6,"rec":"t","hora":"17:00","local":"Felipe Francisco Garcia da Silva","regional":"Edson Rodrigues da Silva"},
-{"id":9,"nome":"Central Setorial Sumidouro","sub":"Campinas","mun":"Sumidouro","central":true,"sem":1,"dia":6,"rec":"t","hora":"19:30","local":"Edilon Marques Evaristo","regional":"Samuel Sardou Fernandes"},
-{"id":10,"nome":"Central Três Rios","sub":"Alto Purys","mun":"Três Rios","central":true,"sem":1,"dia":6,"rec":"i","hora":"17:00","local":"Ezequiel Ferreira de Siqueira","regional":"Izaías Inácio da Silva"},
-{"id":11,"nome":"Central Teresópolis","sub":"São Pedro","mun":"Teresópolis","central":true,"sem":1,"dia":0,"rec":"t","hora":"16:00","local":"","regional":"Samuel Sardou Fernandes"},
-{"id":12,"nome":"Campo do Prado","sub":"","mun":"Cachoeiras de Macacu","central":false,"sem":2,"dia":1,"rec":"t","hora":"19:30","local":"Amílton Francisco","regional":"Edson Rodrigues da Silva"},
-{"id":13,"nome":"Janela das Andorinhas","sub":"","mun":"Nova Friburgo","central":false,"sem":2,"dia":1,"rec":"t","hora":"19:30","local":"Geraldo Firmino","regional":"Edson Rodrigues da Silva"},
-{"id":14,"nome":"Campo do Coelho","sub":"","mun":"Nova Friburgo","central":false,"sem":2,"dia":2,"rec":"t","hora":"19:30","local":"Emerson da Rocha Rosa","regional":"Naor Adbeel Rocha"},
-{"id":15,"nome":"Central Paraíba do Sul","sub":"Palhas","mun":"Paraíba do Sul","central":true,"sem":2,"dia":2,"rec":"p","hora":"19:30","local":"Jorge Inácio da Silva","regional":"Izaías Inácio da Silva"},
-{"id":16,"nome":"Central Setorial Bom Jardim","sub":"Bem-Te-Vi Amarelo","mun":"Bom Jardim","central":true,"sem":2,"dia":3,"rec":"t","hora":"19:30","local":"Marcos Corrêa","regional":"Edson Rodrigues da Silva"},
-{"id":17,"nome":"Fernandes Pinheiro","sub":"","mun":"Três Rios","central":false,"sem":2,"dia":6,"rec":"i","hora":"16:30","local":"","regional":"Izaías Inácio da Silva"},
-{"id":18,"nome":"Chácara do Paraíso","sub":"","mun":"Nova Friburgo","central":false,"sem":2,"dia":6,"rec":"t","hora":"19:30","local":"Marco Antonio Pereira","regional":"Samuel Sardou Fernandes"},
-{"id":19,"nome":"Duas Barras","sub":"Centro","mun":"Duas Barras","central":false,"sem":2,"dia":6,"rec":"t","hora":"19:30","local":"Henrique Oliveira de Paula Matias","regional":"Samuel Lopes Alves"},
-{"id":20,"nome":"Vila Isabel","sub":"","mun":"Três Rios","central":false,"sem":2,"dia":6,"rec":"p","hora":"16:30","local":"Nelson Koizume","regional":"Izaías Inácio da Silva"},
-{"id":21,"nome":"Lambari","sub":"","mun":"Sumidouro","central":false,"sem":2,"dia":6,"rec":"t","hora":"19:30","local":"","regional":"Samuel Sardou Fernandes"},
-{"id":22,"nome":"Lumiar","sub":"","mun":"Nova Friburgo","central":false,"sem":2,"dia":0,"rec":"t","hora":"16:00","local":"Jhonny Santos Klein","regional":"André da Paixão"},
-{"id":23,"nome":"Central Carmo","sub":"São Manoel","mun":"Carmo","central":true,"sem":2,"dia":0,"rec":"t","hora":"10:00","local":"","regional":"Samuel Lopes Alves"},
-{"id":24,"nome":"Prado","sub":"","mun":"Nova Friburgo","central":false,"sem":3,"dia":1,"rec":"t","hora":"19:30","local":"Luiz Carlos Angote Dias","regional":"André da Paixão"},
-{"id":25,"nome":"Olaria","sub":"","mun":"Nova Friburgo","central":false,"sem":3,"dia":2,"rec":"t","hora":"19:30","local":"Murillo Antunes Araujo Moura","regional":"Naor Adbeel Rocha"},
-{"id":26,"nome":"Japuíba","sub":"","mun":"Cachoeiras de Macacu","central":false,"sem":3,"dia":2,"rec":"t","hora":"19:30","local":"Heraldo Machado Mendes","regional":"Edson Rodrigues da Silva"},
-{"id":27,"nome":"São Geraldo","sub":"","mun":"Nova Friburgo","central":false,"sem":3,"dia":4,"rec":"t","hora":"19:30","local":"Josenei Rodrigues Fernandes","regional":"Naor Adbeel Rocha"},
-{"id":28,"nome":"Central Cordeiro","sub":"Lavrinhas","mun":"Cordeiro","central":true,"sem":3,"dia":5,"rec":"t","hora":"19:30","local":"","regional":"Samuel Lopes Alves"},
-{"id":29,"nome":"Central Duas Barras","sub":"Holofote","mun":"Duas Barras","central":true,"sem":3,"dia":6,"rec":"t","hora":"19:30","local":"Elinaldo S. dos Santos","regional":"Samuel Lopes Alves"},
-{"id":30,"nome":"Central Sapucaia","sub":"Distrito Anta","mun":"Sapucaia","central":true,"sem":3,"dia":6,"rec":"t","hora":"16:30","local":"Tiago Gonçalves Vargas","regional":"Samuel Lopes Alves"},
-{"id":31,"nome":"Limoeiro","sub":"","mun":"Paraíba do Sul","central":false,"sem":3,"dia":0,"rec":"p","hora":"15:30","local":"Gleidston Gomes Gonçalves","regional":"Izaías Inácio da Silva"},
-{"id":32,"nome":"Parque Dom João VI","sub":"","mun":"Nova Friburgo","central":false,"sem":4,"dia":1,"rec":"t","hora":"19:30","local":"","regional":"Naor Adbeel Rocha"},
-{"id":33,"nome":"Loteamento Floresta","sub":"","mun":"Nova Friburgo","central":false,"sem":4,"dia":5,"rec":"t","hora":"19:30","local":"Mario Sergio Gomes Soares","regional":"André da Paixão"},
-{"id":34,"nome":"Amparo","sub":"","mun":"Nova Friburgo","central":false,"sem":4,"dia":6,"rec":"t","hora":"19:30","local":"Almair Marinho","regional":"André da Paixão"},
-{"id":35,"nome":"Banquete","sub":"2º Distrito","mun":"Bom Jardim","central":false,"sem":4,"dia":6,"rec":"t","hora":"19:30","local":"","regional":"Edson Rodrigues da Silva"},
-{"id":36,"nome":"Bela Vista","sub":"","mun":"Paraíba do Sul","central":false,"sem":4,"dia":6,"rec":"i","hora":"16:30","local":"","regional":"Izaías Inácio da Silva"},
-{"id":37,"nome":"Stucky","sub":"","mun":"Nova Friburgo","central":false,"sem":4,"dia":0,"rec":"t","hora":"16:00","local":"Dalvan Quintanilha Toledo","regional":"Naor Adbeel Rocha"},
-{"id":38,"nome":"Cidade Nova","sub":"","mun":"Três Rios","central":false,"sem":4,"dia":0,"rec":"p","hora":"15:30","local":"Neemias Fontes da Silva Gomes","regional":"Izaías Inácio da Silva"},
-{"id":39,"nome":"Conquista","sub":"","mun":"Nova Friburgo","central":false,"sem":5,"dia":5,"rec":"t","hora":"19:30","local":"Alceir Rome Rocha","regional":"Naor Adbeel Rocha"}
-]}</script>
+<script id="dados" type="application/json">{"meta":{"aviso":"","atualizado":""},"ensaios":[{"id":1,"nome":"Rui Sanglard","sub":"","mun":"Nova Friburgo","central":false,"sem":1,"dia":1,"rec":"t","hora":"19:30"},{"id":2,"nome":"Vieira","sub":"","mun":"Teresópolis","central":false,"sem":1,"dia":1,"rec":"t","hora":"19:30"},{"id":3,"nome":"Central Regional","sub":"Cordoeira","mun":"Nova Friburgo","central":true,"sem":1,"dia":2,"rec":"t","hora":"19:30"},{"id":4,"nome":"Sítio Capivari","sub":"","mun":"Bom Jardim","central":false,"sem":1,"dia":2,"rec":"t","hora":"19:30"},{"id":5,"nome":"Liberdade","sub":"","mun":"Paraíba do Sul","central":false,"sem":1,"dia":4,"rec":"i","hora":"19:30"},{"id":6,"nome":"Riograndina","sub":"","mun":"Nova Friburgo","central":false,"sem":1,"dia":5,"rec":"t","hora":"19:30"},{"id":7,"nome":"Nova Suíça","sub":"","mun":"Nova Friburgo","central":false,"sem":1,"dia":6,"rec":"t","hora":"19:30"},{"id":8,"nome":"Papucaia","sub":"","mun":"Cachoeiras de Macacu","central":false,"sem":1,"dia":6,"rec":"t","hora":"17:00"},{"id":9,"nome":"Central Setorial Sumidouro","sub":"Campinas","mun":"Sumidouro","central":true,"sem":1,"dia":6,"rec":"t","hora":"19:30"},{"id":10,"nome":"Central Três Rios","sub":"Alto Purys","mun":"Três Rios","central":true,"sem":1,"dia":6,"rec":"i","hora":"17:00"},{"id":11,"nome":"Central Teresópolis","sub":"São Pedro","mun":"Teresópolis","central":true,"sem":1,"dia":0,"rec":"t","hora":"16:00"},{"id":12,"nome":"Campo do Prado","sub":"","mun":"Cachoeiras de Macacu","central":false,"sem":2,"dia":1,"rec":"t","hora":"19:30"},{"id":13,"nome":"Janela das Andorinhas","sub":"","mun":"Nova Friburgo","central":false,"sem":2,"dia":1,"rec":"t","hora":"19:30"},{"id":14,"nome":"Campo do Coelho","sub":"","mun":"Nova Friburgo","central":false,"sem":2,"dia":2,"rec":"t","hora":"19:30"},{"id":15,"nome":"Central Paraíba do Sul","sub":"Palhas","mun":"Paraíba do Sul","central":true,"sem":2,"dia":2,"rec":"p","hora":"19:30"},{"id":16,"nome":"Central Setorial Bom Jardim","sub":"Bem-Te-Vi Amarelo","mun":"Bom Jardim","central":true,"sem":2,"dia":3,"rec":"t","hora":"19:30"},{"id":17,"nome":"Fernandes Pinheiro","sub":"","mun":"Três Rios","central":false,"sem":2,"dia":6,"rec":"i","hora":"16:30"},{"id":18,"nome":"Chácara do Paraíso","sub":"","mun":"Nova Friburgo","central":false,"sem":2,"dia":6,"rec":"t","hora":"19:30"},{"id":19,"nome":"Duas Barras","sub":"Centro","mun":"Duas Barras","central":false,"sem":2,"dia":6,"rec":"t","hora":"19:30"},{"id":20,"nome":"Vila Isabel","sub":"","mun":"Três Rios","central":false,"sem":2,"dia":6,"rec":"p","hora":"16:30"},{"id":21,"nome":"Lambari","sub":"","mun":"Sumidouro","central":false,"sem":2,"dia":6,"rec":"t","hora":"19:30"},{"id":22,"nome":"Lumiar","sub":"","mun":"Nova Friburgo","central":false,"sem":2,"dia":0,"rec":"t","hora":"16:00"},{"id":23,"nome":"Central Carmo","sub":"São Manoel","mun":"Carmo","central":true,"sem":2,"dia":0,"rec":"t","hora":"10:00"},{"id":24,"nome":"Prado","sub":"","mun":"Nova Friburgo","central":false,"sem":3,"dia":1,"rec":"t","hora":"19:30"},{"id":25,"nome":"Olaria","sub":"","mun":"Nova Friburgo","central":false,"sem":3,"dia":2,"rec":"t","hora":"19:30"},{"id":26,"nome":"Japuíba","sub":"","mun":"Cachoeiras de Macacu","central":false,"sem":3,"dia":2,"rec":"t","hora":"19:30"},{"id":27,"nome":"São Geraldo","sub":"","mun":"Nova Friburgo","central":false,"sem":3,"dia":4,"rec":"t","hora":"19:30"},{"id":28,"nome":"Central Cordeiro","sub":"Lavrinhas","mun":"Cordeiro","central":true,"sem":3,"dia":5,"rec":"t","hora":"19:30"},{"id":29,"nome":"Central Duas Barras","sub":"Holofote","mun":"Duas Barras","central":true,"sem":3,"dia":6,"rec":"t","hora":"19:30"},{"id":30,"nome":"Central Sapucaia","sub":"Distrito Anta","mun":"Sapucaia","central":true,"sem":3,"dia":6,"rec":"t","hora":"16:30"},{"id":31,"nome":"Limoeiro","sub":"","mun":"Paraíba do Sul","central":false,"sem":3,"dia":0,"rec":"p","hora":"15:30"},{"id":32,"nome":"Parque Dom João VI","sub":"","mun":"Nova Friburgo","central":false,"sem":4,"dia":1,"rec":"t","hora":"19:30"},{"id":33,"nome":"Loteamento Floresta","sub":"","mun":"Nova Friburgo","central":false,"sem":4,"dia":5,"rec":"t","hora":"19:30"},{"id":34,"nome":"Amparo","sub":"","mun":"Nova Friburgo","central":false,"sem":4,"dia":6,"rec":"t","hora":"19:30"},{"id":35,"nome":"Banquete","sub":"2º Distrito","mun":"Bom Jardim","central":false,"sem":4,"dia":6,"rec":"t","hora":"19:30"},{"id":36,"nome":"Bela Vista","sub":"","mun":"Paraíba do Sul","central":false,"sem":4,"dia":6,"rec":"i","hora":"16:30"},{"id":37,"nome":"Stucky","sub":"","mun":"Nova Friburgo","central":false,"sem":4,"dia":0,"rec":"t","hora":"16:00"},{"id":38,"nome":"Cidade Nova","sub":"","mun":"Três Rios","central":false,"sem":4,"dia":0,"rec":"p","hora":"15:30"},{"id":39,"nome":"Conquista","sub":"","mun":"Nova Friburgo","central":false,"sem":5,"dia":5,"rec":"t","hora":"19:30"}]}</script>
 
 <script>
 //#logic-start
@@ -249,12 +209,11 @@ function cardHtml(e,o){
   if(e.central)pills+='<span class="pill cen">Central</span>';
   if(e.rec==='i')pills+='<span class="pill">Meses ímpares</span>';
   if(e.rec==='p')pills+='<span class="pill">Meses pares</span>';
-  var loc=e.local?'<dd>'+esc(e.local)+'</dd>':'<dd class="vazio">não informado</dd>';
   var px='';
   if(p)px='<div class="prox'+(p.i===0?' agora':'')+'"><b>'+fmtData(p.d)+'</b><span>'+rel(p.i)+'</span></div>';
   return '<article class="ens"><div class="hora">'+esc(e.hora)+'</div><div class="corpo"><h3>'+esc(e.nome)+(e.sub?'<span class="sub"> · '+esc(e.sub)+'</span>':'')+'</h3>'+
-    '<p class="onde"><span>'+esc(e.mun)+' · '+quando(e)+'</span>'+pills+'</p>'+
-    '<dl class="enc"><div><dt>Encarregado local</dt>'+loc+'</div><div><dt>Encarregado regional</dt><dd>'+esc(e.regional||'—')+'</dd></div></dl></div>'+px+'</article>';
+    '<p class="onde" style="margin-bottom:0"><span>'+esc(e.mun)+' · '+quando(e)+'</span>'+pills+'</p>'+
+    '</div>'+px+'</article>';
 }
 
 function filtrar(){
@@ -370,14 +329,12 @@ function renderTabela(){
     var l=dados.ensaios.filter(function(e){return e.sem===sm}).sort(cmpMes);
     if(!l.length)return;
     h+='<h2 class="grupo">'+rotulos[sm]+'<span>'+l.length+' '+(l.length===1?'ensaio':'ensaios')+'</span></h2>';
-    h+='<div class="tab-wrap" tabindex="0"><table class="tb"><thead><tr><th scope="col">Congregação</th><th scope="col">Dia do ensaio</th><th scope="col">Horário</th><th scope="col">Encarregado local</th><th scope="col">Encarregado regional</th></tr></thead><tbody>';
+    h+='<div class="tab-wrap" tabindex="0"><table class="tb"><thead><tr><th scope="col">Congregação</th><th scope="col">Dia do ensaio</th><th scope="col">Horário</th></tr></thead><tbody>';
     l.forEach(function(e){
       var det=[e.sub,e.mun].filter(Boolean).join(' · ');
       h+='<tr><th scope="row"><strong>'+esc(e.nome)+'</strong><span class="m">'+esc(det)+'</span></th>'+
         '<td>'+quando(e)+(e.rec==='i'?'<span class="m">meses ímpares</span>':(e.rec==='p'?'<span class="m">meses pares</span>':''))+'</td>'+
-        '<td class="num">'+esc(e.hora)+'</td>'+
-        '<td>'+(e.local?esc(e.local):'<span class="m">não informado</span>')+'</td>'+
-        '<td>'+esc(e.regional||'—')+'</td></tr>';
+        '<td class="num">'+esc(e.hora)+'</td></tr>';
     });
     h+='</tbody></table></div>';
   });
@@ -407,10 +364,8 @@ function renderAdmin(){
     '<div class="campo"><label for="f-diaA">Dia da semana</label><select id="f-diaA">'+ORDEM_DIA.map(function(d){return '<option value="'+d+'"'+(v.dia===d?' selected':'')+'>'+DIAS[d]+'</option>'}).join('')+'</select></div>'+
     '<div class="campo"><label for="f-recA">Meses</label><select id="f-recA"><option value="t"'+(v.rec==='t'?' selected':'')+'>Todos os meses</option><option value="i"'+(v.rec==='i'?' selected':'')+'>Só meses ímpares</option><option value="p"'+(v.rec==='p'?' selected':'')+'>Só meses pares</option></select></div>'+
     '<div class="campo"><label for="f-horaA">Horário</label><input id="f-horaA" type="time" value="'+esc(v.hora)+'"></div>'+
-    '<div class="campo"><label for="f-local">Encarregado local</label><input id="f-local" value="'+esc(v.local)+'"></div>'+
-    '<div class="campo"><label for="f-regA">Encarregado regional</label><input id="f-regA" list="dl-reg" value="'+esc(v.regional)+'"></div>'+
     '</div><label class="check"><input type="checkbox" id="f-cen"'+(v.central?' checked':'')+'> Ensaio de congregação central</label>'+
-    '<datalist id="dl-mun">'+uniq('mun').map(function(x){return '<option value="'+esc(x)+'">'}).join('')+'</datalist><datalist id="dl-reg">'+uniq('regional').map(function(x){return '<option value="'+esc(x)+'">'}).join('')+'</datalist>'+
+    '<datalist id="dl-mun">'+uniq('mun').map(function(x){return '<option value="'+esc(x)+'">'}).join('')+'</datalist>'+
     '<p class="erro" id="f-erro" role="alert"></p><div class="acoes"><button class="btn" type="button" data-act="adm-save">Salvar ensaio</button><button class="btn sec" type="button" data-act="adm-cancel">Cancelar</button></div></div>';
   }else{
     h+='<div class="acoes"><button class="btn" type="button" data-act="adm-new">Novo ensaio</button></div>';
@@ -500,7 +455,6 @@ app.addEventListener('click',function(ev){
     var e=editId==='novo'?{id:nextId()}:dados.ensaios.filter(function(x){return x.id===editId})[0];
     e.nome=nome;e.sub=$('#f-sub').value.trim();e.mun=mun;e.central=$('#f-cen').checked;
     e.sem=+$('#f-semA').value;e.dia=+$('#f-diaA').value;e.rec=$('#f-recA').value;e.hora=hora;
-    e.local=$('#f-local').value.trim();e.regional=$('#f-regA').value.trim();
     if(editId==='novo')dados.ensaios.push(e);
     editId=null;dirty++;renderTudo();
   }
